@@ -1,0 +1,22 @@
+{
+    "name": "broadway/event-store-mongodb",
+    "description": "A MongoDB EventStore implementation for Broadway.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Robin van der Vleuten",
+            "email": "robin@webstronauts.co"
+        }
+    ],
+    "homepage" : "https://github.com/broadway/event-store-mongodb",
+    "autoload": {
+        "psr-4": {
+            "Broadway\\EventStore\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
