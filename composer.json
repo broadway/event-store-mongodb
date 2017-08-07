@@ -2,16 +2,35 @@
     "name": "broadway/event-store-mongodb",
     "description": "A MongoDB EventStore implementation for Broadway.",
     "license": "MIT",
+    "homepage" : "https://github.com/broadway/event-store-mongodb",
     "authors": [
         {
             "name": "Robin van der Vleuten",
             "email": "robin@webstronauts.co"
         }
     ],
-    "homepage" : "https://github.com/broadway/event-store-mongodb",
+    "require": {
+        "php": ">=5.5.9",
+        "broadway/broadway": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8",
+        "ramsey/uuid": "^3.3",
+        "broadway/uuid-generator": "~0.4.0"
+    },
+    "suggest": {
+        "doctrine/mongodb": "For persisting events",
+        "alcaeus/mongo-php-adapter": "Polyfill for Mongo extension on PHP 7"
+    },
     "autoload": {
         "psr-4": {
-            "Broadway\\EventStore\\": "src"
+            "Broadway\\EventStore\\Mongo\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Broadway\\EventStore\\Mongo\\": "test/",
+            "Broadway\\": "vendor/broadway/broadway/test/Broadway/"
         }
     },
     "extra": {
