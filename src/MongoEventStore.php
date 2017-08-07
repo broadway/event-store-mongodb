@@ -180,33 +180,33 @@ class MongoEventStore implements EventStore, EventStoreManagement
             );
         }
 
-        $findCriteria = $this->getWheresForCriteria($criteria);
+        $findBy = $this->buildFindByCriteria($criteria);
 
-        return $this->eventCollection->find($findCriteria);
+        foreach($this->eventCollection->find($findBy) as $event){
+            $eventVisitor->doWithEvent($this->deserializeEvent($event));
+        }
 
+    }
+    
+    public function configureCollection()
+    {
+        $this->eventCollection->createIndex(['uuid' =>1, 'playhead' => 1],['unique' => true]);
     }
 
     /**
      * @param Criteria $criteria
      * @return array
      */
-    private function getWheresForCriteria(Criteria $criteria)
+    private function buildFindByCriteria(Criteria $criteria)
     {
-        $wheres = [];
-
-        if (!empty($criteria->getAggregateRootIds())) {
-            $wheres['uuid'] = $criteria->getAggregateRootIds();
+        $findBy = [];
+        if ($criteria->getAggregateRootIds()) {
+            $findBy['uuid'] = ['$in' => $criteria->getAggregateRootIds()];
         }
 
-        if (!empty($criteria->getEventTypes())) {
-            $wheres['type'] = $criteria->getAggregateRootTypes();
+        if ($criteria->getEventTypes()) {
+            $findBy['type'] = ['$in' => $criteria->getEventTypes()];
         }
-
-        return $wheres;
-    }
-    
-    public function configureCollection()
-    {
-        $this->eventCollection->createIndex(['playhead' => 1],['unique' => true]);
+        return $findBy;
     }
 }
