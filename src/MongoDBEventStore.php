@@ -1,19 +1,18 @@
 <?php
 
-namespace Broadway\EventStore\Mongo;
+namespace Broadway\EventStore\MongoDB;
 
-use MongoDB\Client;
 use MongoCollection;
 use MongoDB\Collection;
-use Broadway\Domain\DateTime;
 use MongoDB\Model\BSONDocument;
+use MongoDB\Driver\Exception\BulkWriteException;
+use Broadway\Domain\DateTime;
 use Broadway\Domain\DomainMessage;
 use Broadway\Serializer\Serializer;
+use Broadway\Domain\DomainEventStream;
 use Broadway\EventStore\EventStore;
 use Broadway\EventStore\EventVisitor;
-use Broadway\Domain\DomainEventStream;
 use Broadway\EventStore\Management\Criteria;
-use MongoDB\Driver\Exception\BulkWriteException;
 use Broadway\EventStore\EventStreamNotFoundException;
 use Broadway\EventStore\Management\EventStoreManagement;
 use Broadway\EventStore\Exception\DuplicatePlayheadException;
@@ -22,13 +21,13 @@ use Broadway\EventStore\Management\CriteriaNotSupportedException;
 /**
  * @author Robin van der Vleuten <robin@webstronauts.co>
  */
-class MongoEventStore implements EventStore, EventStoreManagement
+class MongoDBEventStore implements EventStore, EventStoreManagement
 {
 
     /**
-     * @var Client
+     * @var Collection
      */
-    private $client;
+    private $eventCollection;
 
     /**
      * @var Serializer
@@ -41,35 +40,14 @@ class MongoEventStore implements EventStore, EventStoreManagement
     private $metadataSerializer;
 
 
-    /**
-     * @var Collection
-     */
-    private $eventCollection;
-    /**
-     * @var string
-     */
-    private $databaseName;
-    /**
-     * @var string
-     */
-    private $eventCollectionName;
-
-
     public function __construct(
-        Client $client,
+        Collection $eventCollection,
         Serializer $payloadSerializer,
-        Serializer $metadataSerializer,
-        string $databaseName,
-        string $eventCollectionName
+        Serializer $metadataSerializer
     ) {
-        $this->client = $client;
+        $this->eventCollection = $eventCollection;
         $this->payloadSerializer = $payloadSerializer;
         $this->metadataSerializer = $metadataSerializer;
-        $this->databaseName = $databaseName;
-        $this->eventCollectionName = $eventCollectionName;
-
-        $this->eventCollection = $client->selectCollection($databaseName, $eventCollectionName);
-
     }
     
     /**
@@ -77,7 +55,6 @@ class MongoEventStore implements EventStore, EventStoreManagement
      */
     public function load($id)
     {
-
         $cursor = $this->eventCollection
             ->find([
                 'uuid' => (string) $id,
@@ -185,12 +162,6 @@ class MongoEventStore implements EventStore, EventStoreManagement
         foreach($this->eventCollection->find($findBy) as $event){
             $eventVisitor->doWithEvent($this->deserializeEvent($event));
         }
-
-    }
-    
-    public function configureCollection()
-    {
-        $this->eventCollection->createIndex(['uuid' =>1, 'playhead' => 1],['unique' => true]);
     }
 
     /**
@@ -208,5 +179,10 @@ class MongoEventStore implements EventStore, EventStoreManagement
             $findBy['type'] = ['$in' => $criteria->getEventTypes()];
         }
         return $findBy;
+    }
+    
+    public function configureCollection()
+    {
+        $this->eventCollection->createIndex(['uuid' => 1, 'playhead' => 1],['unique' => true]);
     }
 }

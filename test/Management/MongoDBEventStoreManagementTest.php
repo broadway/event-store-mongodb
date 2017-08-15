@@ -1,21 +1,18 @@
 <?php
 
-namespace Broadway\EventStore\Mongo;
+namespace Broadway\EventStore\MongoDB;
 
-use Broadway\EventStore\Management\EventStoreManagementTest;
 use MongoDB\Client;
-use MongoDB\Database;
 use Broadway\Serializer\SimpleInterfaceSerializer;
+use Broadway\EventStore\Management\EventStoreManagementTest;
 
-class MongoEventStoreManagementTest extends EventStoreManagementTest
+class MongoDBEventStoreManagementTest extends EventStoreManagementTest
 {
 
     protected static $databaseName = 'mongodb_test';
     protected static $eventCollectionName = 'test_events';
-    
-    /**
-     * @var Client
-     */
+
+    /* @var Client $client */
     protected $client;
 
 
@@ -24,8 +21,7 @@ class MongoEventStoreManagementTest extends EventStoreManagementTest
      */
     public function setUp()
     {
-        $this->client =  new Client('mongodb://localhost:27017');
-        $this->client->selectDatabase(self::$databaseName)->drop();
+        $this->client = new Client('mongodb://localhost:27017');
 
         parent::setUp();
     }
@@ -35,12 +31,12 @@ class MongoEventStoreManagementTest extends EventStoreManagementTest
      */
     protected function createEventStore()
     {
-        $eventStore = new MongoEventStore(
-            $this->client,
+        $collection = $this->client->selectCollection(self::$databaseName, self::$eventCollectionName);
+
+        $eventStore = new MongoDBEventStore(
+            $collection,
             new SimpleInterfaceSerializer(),
-            new SimpleInterfaceSerializer(),
-            self::$databaseName,
-            self::$eventCollectionName
+            new SimpleInterfaceSerializer()
         );
 
         $eventStore->configureCollection();

@@ -11,7 +11,8 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "broadway/broadway": "^1.0"
+        "broadway/broadway": "^1.0",
+        "ext-mongodb": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8",
@@ -19,12 +20,11 @@
         "broadway/uuid-generator": "~0.4.0"
     },
     "suggest": {
-        "doctrine/mongodb": "For persisting events",
         "alcaeus/mongo-php-adapter": "Polyfill for Mongo extension on PHP 7"
     },
     "autoload": {
         "psr-4": {
-            "Broadway\\EventStore\\Mongo\\": "src/"
+            "Broadway\\EventStore\\MongoDB\\": "src/"
         }
     },
     "autoload-dev": {
