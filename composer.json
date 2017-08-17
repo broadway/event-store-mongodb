@@ -12,6 +12,7 @@
     "require": {
         "php": ">=5.5.9",
         "broadway/broadway": "^1.0",
+        "mongodb/mongodb": "^1.1",
         "ext-mongodb": "*"
     },
     "require-dev": {
