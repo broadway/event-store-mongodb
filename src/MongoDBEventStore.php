@@ -65,7 +65,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
             $domainMessages[] = $this->denormalizeDomainMessage($domainMessage);
         }
 
-        if (!$domainMessages) {
+        if (empty($domainMessages)) {
             throw new EventStreamNotFoundException(sprintf('EventStream not found for aggregate with id %s', (string) $id));
         }
 
