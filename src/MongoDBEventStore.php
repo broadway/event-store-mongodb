@@ -2,7 +2,6 @@
 
 namespace Broadway\EventStore\MongoDB;
 
-use MongoCollection;
 use MongoDB\Collection;
 use MongoDB\Model\BSONDocument;
 use MongoDB\Driver\Exception\BulkWriteException;
@@ -58,19 +57,19 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         $cursor = $this->eventCollection
             ->find([
                 'uuid' => (string) $id,
-            ],['sort' => ['payhead' => MongoCollection::ASCENDING]]);
+            ],['sort' => ['playhead' => 1]]);
 
-        $events = [];
+        $domainMessages = [];
 
-        foreach ($cursor as $event) {
-            $events[] = $this->deserializeEvent($event);
+        foreach ($cursor as $domainMessage) {
+            $domainMessages[] = $this->denormalizeDomainMessage($domainMessage);
         }
 
-        if (!$events) {
+        if (!$domainMessages) {
             throw new EventStreamNotFoundException(sprintf('EventStream not found for aggregate with id %s', (string) $id));
         }
 
-        return new DomainEventStream($events);
+        return new DomainEventStream($domainMessages);
     }
 
     /**
@@ -82,14 +81,15 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
             ->find([
                 'uuid' => (string) $id,
                 'playhead' => ['$gte' => $playhead]
-            ],['sort' => ['payhead' => MongoCollection::ASCENDING]]);
+            ],['sort' => ['playhead' => 1]]);
 
-        $events = [];
-        foreach ($cursor as $event) {
-            $events[] = $this->deserializeEvent($event);
+        $domainMessages = [];
+
+        foreach ($cursor as $domainMessage) {
+            $domainMessages[] = $this->denormalizeDomainMessage($domainMessage);
         }
 
-        return new DomainEventStream($events);
+        return new DomainEventStream($domainMessages);
     }
 
     /**
@@ -97,7 +97,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
      *
      * @return DomainMessage
      */
-    private function deserializeEvent(BSONDocument $event)
+    private function denormalizeDomainMessage(BSONDocument $event)
     {
         return new DomainMessage(
             $event['uuid'],
@@ -107,7 +107,6 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
             DateTime::fromString($event['recorded_on'])
         );
     }
-
 
     /**
      * {@inheritdoc}
@@ -145,7 +144,6 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         ];
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -160,7 +158,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         $findBy = $this->buildFindByCriteria($criteria);
 
         foreach($this->eventCollection->find($findBy) as $event){
-            $eventVisitor->doWithEvent($this->deserializeEvent($event));
+            $eventVisitor->doWithEvent($this->denormalizeDomainMessage($event));
         }
     }
 
@@ -180,7 +178,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         }
         return $findBy;
     }
-    
+
     public function configureCollection()
     {
         $this->eventCollection->createIndex(['uuid' => 1, 'playhead' => 1],['unique' => true]);
