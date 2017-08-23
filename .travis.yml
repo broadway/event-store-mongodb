@@ -7,14 +7,14 @@ matrix:
     - php: 7.1
     - php: hhvm
   fast_finish: true
+  allow_failures:
+    - php: hhvm
 
 before_install:
   # Disable XDebug speed up test execution.
   - phpenv config-rm xdebug.ini || return 0
-  # Enable Mongo extension on PHP 5
-  - if [[ ${TRAVIS_PHP_VERSION:0:2} == "5." ]]; then echo "extension=mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini || return 0; fi
-  # Enable MongoDB extension on PHP 7
-  - if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then echo "extension=mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini || return 0; fi
+  # Enable MongoDB extension
+  - echo "extension=mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "memory_limit=2G" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini || return 0
 
 install:
@@ -24,10 +24,6 @@ install:
 
 script:
   - phpunit --exclude-group=none
-
-branches:
-  only:
-    - master
 
 services:
   - mongodb
