@@ -7,6 +7,8 @@ matrix:
     - php: 7.1
     - php: hhvm
   fast_finish: true
+  allow_failures:
+    - php: hhvm
 
 before_install:
   # Disable XDebug speed up test execution.
