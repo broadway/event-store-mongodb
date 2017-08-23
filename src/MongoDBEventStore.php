@@ -121,10 +121,11 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
 
         try {
             $this->eventCollection->insertMany($messages);
-        } catch (BulkWriteException $exception) {
-            foreach ($exception->getWriteResult()->getWriteErrors() as $writeError){
-                if($writeError->getCode() === 11000) throw new DuplicatePlayheadException($eventStream, $exception);
+        } catch (BulkWriteException $bulkWriteException) {
+            foreach ($bulkWriteException->getWriteResult()->getWriteErrors() as $writeError){
+                if($writeError->getCode() === 11000) throw new DuplicatePlayheadException($eventStream, $bulkWriteException);
             }
+            throw $bulkWriteException;
         }
     }
 
