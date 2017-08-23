@@ -23,9 +23,5 @@ install:
 script:
   - phpunit --exclude-group=none
 
-branches:
-  only:
-    - master
-
 services:
   - mongodb
