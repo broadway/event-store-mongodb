@@ -2,9 +2,9 @@
 
 namespace Broadway\EventStore\MongoDB;
 
+use Broadway\EventStore\Management\Testing\EventStoreManagementTest;
 use MongoDB\Client;
 use Broadway\Serializer\SimpleInterfaceSerializer;
-use Broadway\EventStore\Management\EventStoreManagementTest;
 
 class MongoDBEventStoreManagementTest extends EventStoreManagementTest
 {
