@@ -10,8 +10,8 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
-        "broadway/broadway": "^1.0",
+        "php": ">=7.0",
+        "broadway/broadway": "^2.0@dev",
         "mongodb/mongodb": "^1.0",
         "ext-mongodb": "*"
     },
@@ -27,8 +27,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Broadway\\EventStore\\Mongo\\": "test/",
-            "Broadway\\": "vendor/broadway/broadway/test/Broadway/"
+            "Broadway\\EventStore\\Mongo\\": "test/"
         }
     },
     "extra": {
