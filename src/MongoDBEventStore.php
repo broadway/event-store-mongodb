@@ -113,6 +113,13 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
      */
     public function append($id, DomainEventStream $eventStream)
     {
+        // noop to ensure that an error will be thrown early if the ID
+        // is not something that can be converted to a string. If we
+        // let this move on without doing this MongoDB will eventually
+        // give us a hard time but the true reason for the problem
+        // will be obfuscated.
+        $id = (string) $id;
+
         $messages = [];
 
         foreach ($eventStream as $message) {
