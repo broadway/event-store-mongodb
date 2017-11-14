@@ -16,7 +16,7 @@
         "ext-mongodb": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8",
+        "phpunit/phpunit": "^6.0",
         "ramsey/uuid": "^3.3",
         "broadway/uuid-generator": "~0.4.0"
     },
