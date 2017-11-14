@@ -48,11 +48,11 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         $this->payloadSerializer = $payloadSerializer;
         $this->metadataSerializer = $metadataSerializer;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function load($id)
+    public function load($id): DomainEventStream
     {
         $cursor = $this->eventCollection
             ->find([
@@ -75,7 +75,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
     /**
      * {@inheritdoc}
      */
-    public function loadFromPlayhead($id, $playhead)
+    public function loadFromPlayhead($id, int $playhead): DomainEventStream
     {
         $cursor = $this->eventCollection
             ->find([
