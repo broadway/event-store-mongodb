@@ -35,3 +35,18 @@ Create index for events collection
 ```javascript
 db.getCollection('events').createIndex({'uuid': 1, 'playhead': 1},{'unique': 1});
 ```
+
+Testing
+-------
+For testing you need a running MongoDB instance.
+To start a local MongoDB you can use the provided [docker-compose.yml](https://docs.docker.com/compose/compose-file/):
+
+```
+docker-compose up -d
+```
+
+To run the tests:
+
+```
+./vendor/bin/phpunit
+```
