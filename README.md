@@ -38,15 +38,11 @@ db.getCollection('events').createIndex({'uuid': 1, 'playhead': 1},{'unique': 1})
 
 Testing
 -------
-For testing you need a running MongoDB instance.
-To start a local MongoDB you can use the provided [docker-compose.yml](https://docs.docker.com/compose/compose-file/):
+For testing you can use you can use the provided [docker-compose.yml](https://docs.docker.com/compose/compose-file/):
 
 ```
-docker-compose up -d
+docker-compose up
 ```
 
-To run the tests:
-
-```
-./vendor/bin/phpunit
-```
+It will download composer dependencies and run phpunit tests. 
+It will also watch for changes in src/ and tests/ and run tests if any file inside change.

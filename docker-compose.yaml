@@ -1,0 +1,29 @@
+version: '3.6'
+
+services:
+  php72-dev:
+    build:
+      context: .
+      dockerfile: docker/php72-dev/Dockerfile
+    container_name: event-store-mongodb-php72-dev
+    depends_on:
+    - mongo
+    links:
+    - mongo
+    volumes:
+    - .:/opt
+    tty: true
+    working_dir: /opt
+    command:
+    - /bin/sh
+    - -c
+    - |
+      composer install
+      vendor/bin/phpunit --exclude-group=none
+      pywatch "vendor/bin/phpunit" /opt/tests/ /opt/src/
+
+  mongo:
+    image: mongo:3
+    container_name: event-store-mongodb-mongo
+    ports:
+      - 8017:27017

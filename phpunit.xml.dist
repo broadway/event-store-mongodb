@@ -13,8 +13,7 @@
 >
     <testsuites>
         <testsuite name="Broadway Event store Test Suite">
-            <directory>./test/</directory>
-            <directory>./examples/</directory>
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
     <filter>

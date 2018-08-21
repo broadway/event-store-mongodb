@@ -57,7 +57,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         $cursor = $this->eventCollection
             ->find([
                 'uuid' => (string) $id,
-            ],['sort' => ['playhead' => 1]]);
+            ], ['sort' => ['playhead' => 1]]);
 
         $domainMessages = [];
 
@@ -81,7 +81,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
             ->find([
                 'uuid' => (string) $id,
                 'playhead' => ['$gte' => $playhead]
-            ],['sort' => ['playhead' => 1]]);
+            ], ['sort' => ['playhead' => 1]]);
 
         $domainMessages = [];
 
@@ -97,7 +97,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
      *
      * @return DomainMessage
      */
-    private function denormalizeDomainMessage(BSONDocument $event)
+    private function denormalizeDomainMessage(BSONDocument $event): DomainMessage
     {
         return new DomainMessage(
             $event['uuid'],
@@ -136,12 +136,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         }
     }
 
-    /**
-     * @param DomainMessage $message
-     *
-     * @return array
-     */
-    private function normalizeDomainMessage(DomainMessage $message)
+    private function normalizeDomainMessage(DomainMessage $message): array
     {
         return [
             'uuid'        => (string) $message->getId(),
@@ -166,18 +161,15 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
 
         $findBy = $this->buildFindByCriteria($criteria);
 
-        foreach($this->eventCollection->find($findBy) as $event){
+        foreach ($this->eventCollection->find($findBy) as $event) {
             $eventVisitor->doWithEvent($this->denormalizeDomainMessage($event));
         }
     }
 
-    /**
-     * @param Criteria $criteria
-     * @return array
-     */
-    private function buildFindByCriteria(Criteria $criteria)
+    private function buildFindByCriteria(Criteria $criteria): array
     {
         $findBy = [];
+
         if ($criteria->getAggregateRootIds()) {
             $findBy['uuid'] = ['$in' => $criteria->getAggregateRootIds()];
         }
@@ -185,11 +177,12 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         if ($criteria->getEventTypes()) {
             $findBy['type'] = ['$in' => $criteria->getEventTypes()];
         }
+
         return $findBy;
     }
 
     public function configureCollection()
     {
-        $this->eventCollection->createIndex(['uuid' => 1, 'playhead' => 1],['unique' => true]);
+        $this->eventCollection->createIndex(['uuid' => 1, 'playhead' => 1], ['unique' => true]);
     }
 }

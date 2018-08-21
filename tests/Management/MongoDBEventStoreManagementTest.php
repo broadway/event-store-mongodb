@@ -1,12 +1,13 @@
 <?php
 
-namespace Broadway\EventStore\MongoDB;
+namespace Broadway\EventStore\MongoDB\Tests\Management;
 
-use Broadway\EventStore\Testing\EventStoreTest;
-use MongoDB\Client;
+use Broadway\EventStore\Management\Testing\EventStoreManagementTest;
+use Broadway\EventStore\MongoDB\MongoDBEventStore;
 use Broadway\Serializer\SimpleInterfaceSerializer;
+use MongoDB\Client;
 
-class MongoDBEventStoreTest extends EventStoreTest
+class MongoDBEventStoreManagementTest extends EventStoreManagementTest
 {
     protected static $databaseName = 'mongodb_test';
     protected static $eventCollectionName = 'test_events';
@@ -14,29 +15,39 @@ class MongoDBEventStoreTest extends EventStoreTest
     /* @var Client $client */
     protected $client;
 
+
     /**
      * @inheritdoc
      */
     public function setUp()
     {
-        $this->client = new Client('mongodb://localhost:27017');
-        $this->client->selectDatabase(self::$databaseName)->drop();
+        $this->client = new Client('mongodb://mongo:27017');
 
-        $collection = $this->client->selectCollection(self::$databaseName, self::$eventCollectionName);
-
-        $this->eventStore = new MongoDBEventStore(
-            $collection,
-            new SimpleInterfaceSerializer(),
-            new SimpleInterfaceSerializer()
-        );
-
-        $this->eventStore->configureCollection();
+        parent::setUp();
     }
 
     /**
      * @inheritdoc
      */
-    public function tearDown()
+    protected function createEventStore()
+    {
+        $collection = $this->client->selectCollection(self::$databaseName, self::$eventCollectionName);
+
+        $eventStore = new MongoDBEventStore(
+            $collection,
+            new SimpleInterfaceSerializer(),
+            new SimpleInterfaceSerializer()
+        );
+
+        $eventStore->configureCollection();
+
+        return $eventStore;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function tearDown()
     {
         $this->client->selectDatabase(self::$databaseName)->drop();
     }
