@@ -1,11 +1,7 @@
 FROM php:7.2-cli
 
 RUN apt-get update -yqq
-RUN apt-get install -y python-pip wget zip -yqq
-
-# Install python modules for watching file changes
-RUN pip install -U pip
-RUN pip install pywatch
+RUN apt-get install -y wget zip -yqq
 
 # Install composer
 RUN wget https://composer.github.io/installer.sig -O - -q | tr -d '\n' > installer.sig \

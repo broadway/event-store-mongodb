@@ -41,8 +41,10 @@ Testing
 For testing you can use you can use the provided [docker-compose.yml](https://docs.docker.com/compose/compose-file/):
 
 ```
-docker-compose up
+docker-compose up -d
 ```
 
-It will download composer dependencies and run phpunit tests. 
-It will also watch for changes in src/ and tests/ and run tests if any file inside change.
+To run the tests:
+```
+docker-compose exec php72-dev php ./vendor/bin/phpunit
+```
