@@ -111,7 +111,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
     /**
      * {@inheritdoc}
      */
-    public function append($id, DomainEventStream $eventStream)
+    public function append($id, DomainEventStream $eventStream): void
     {
         // noop to ensure that an error will be thrown early if the ID
         // is not something that can be converted to a string. If we
@@ -156,7 +156,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
     /**
      * {@inheritdoc}
      */
-    public function visitEvents(Criteria $criteria, EventVisitor $eventVisitor)
+    public function visitEvents(Criteria $criteria, EventVisitor $eventVisitor): void
     {
         if ($criteria->getAggregateRootTypes()) {
             throw new CriteriaNotSupportedException(
