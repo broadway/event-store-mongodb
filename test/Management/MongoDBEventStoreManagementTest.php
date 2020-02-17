@@ -19,7 +19,7 @@ class MongoDBEventStoreManagementTest extends EventStoreManagementTest
     /**
      * @inheritdoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = new Client('mongodb://localhost:27017');
 
@@ -47,7 +47,7 @@ class MongoDBEventStoreManagementTest extends EventStoreManagementTest
     /**
      * @inheritdoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->client->selectDatabase(self::$databaseName)->drop();
     }
