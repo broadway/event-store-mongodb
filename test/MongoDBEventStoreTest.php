@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Broadway\EventStore\MongoDB;
 
 use Broadway\EventStore\Testing\EventStoreTest;
-use MongoDB\Client;
 use Broadway\Serializer\SimpleInterfaceSerializer;
+use MongoDB\Client;
 
 class MongoDBEventStoreTest extends EventStoreTest
 {
@@ -15,7 +17,7 @@ class MongoDBEventStoreTest extends EventStoreTest
     protected $client;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setUp(): void
     {
@@ -34,7 +36,7 @@ class MongoDBEventStoreTest extends EventStoreTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function tearDown(): void
     {

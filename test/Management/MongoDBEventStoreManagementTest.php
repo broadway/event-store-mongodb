@@ -1,23 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Broadway\EventStore\MongoDB;
 
 use Broadway\EventStore\Management\Testing\EventStoreManagementTest;
-use MongoDB\Client;
 use Broadway\Serializer\SimpleInterfaceSerializer;
+use MongoDB\Client;
 
 class MongoDBEventStoreManagementTest extends EventStoreManagementTest
 {
-
     protected static $databaseName = 'mongodb_test';
     protected static $eventCollectionName = 'test_events';
 
     /* @var Client $client */
     protected $client;
 
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setUp(): void
     {
@@ -27,7 +27,7 @@ class MongoDBEventStoreManagementTest extends EventStoreManagementTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createEventStore()
     {
@@ -45,7 +45,7 @@ class MongoDBEventStoreManagementTest extends EventStoreManagementTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function tearDown(): void
     {

@@ -1,28 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Broadway\EventStore\MongoDB;
 
-use MongoDB\Collection;
-use MongoDB\Model\BSONDocument;
-use MongoDB\Driver\Exception\BulkWriteException;
 use Broadway\Domain\DateTime;
-use Broadway\Domain\DomainMessage;
-use Broadway\Serializer\Serializer;
 use Broadway\Domain\DomainEventStream;
+use Broadway\Domain\DomainMessage;
 use Broadway\EventStore\EventStore;
-use Broadway\EventStore\EventVisitor;
-use Broadway\EventStore\Management\Criteria;
 use Broadway\EventStore\EventStreamNotFoundException;
-use Broadway\EventStore\Management\EventStoreManagement;
+use Broadway\EventStore\EventVisitor;
 use Broadway\EventStore\Exception\DuplicatePlayheadException;
+use Broadway\EventStore\Management\Criteria;
 use Broadway\EventStore\Management\CriteriaNotSupportedException;
+use Broadway\EventStore\Management\EventStoreManagement;
+use Broadway\Serializer\Serializer;
+use MongoDB\Collection;
+use MongoDB\Driver\Exception\BulkWriteException;
+use MongoDB\Model\BSONDocument;
 
 /**
  * @author Robin van der Vleuten <robin@webstronauts.co>
  */
 class MongoDBEventStore implements EventStore, EventStoreManagement
 {
-
     /**
      * @var Collection
      */
@@ -37,7 +38,6 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
      * @var Serializer
      */
     private $metadataSerializer;
-
 
     public function __construct(
         Collection $eventCollection,
@@ -57,7 +57,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         $cursor = $this->eventCollection
             ->find([
                 'uuid' => (string) $id,
-            ],['sort' => ['playhead' => 1]]);
+            ], ['sort' => ['playhead' => 1]]);
 
         $domainMessages = [];
 
@@ -80,8 +80,8 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         $cursor = $this->eventCollection
             ->find([
                 'uuid' => (string) $id,
-                'playhead' => ['$gte' => $playhead]
-            ],['sort' => ['playhead' => 1]]);
+                'playhead' => ['$gte' => $playhead],
+            ], ['sort' => ['playhead' => 1]]);
 
         $domainMessages = [];
 
@@ -93,8 +93,6 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
     }
 
     /**
-     * @param BSONDocument $event
-     *
      * @return DomainMessage
      */
     private function denormalizeDomainMessage(BSONDocument $event)
@@ -129,27 +127,27 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         try {
             $this->eventCollection->insertMany($messages);
         } catch (BulkWriteException $bulkWriteException) {
-            foreach ($bulkWriteException->getWriteResult()->getWriteErrors() as $writeError){
-                if($writeError->getCode() === 11000) throw new DuplicatePlayheadException($eventStream, $bulkWriteException);
+            foreach ($bulkWriteException->getWriteResult()->getWriteErrors() as $writeError) {
+                if (11000 === $writeError->getCode()) {
+                    throw new DuplicatePlayheadException($eventStream, $bulkWriteException);
+                }
             }
             throw $bulkWriteException;
         }
     }
 
     /**
-     * @param DomainMessage $message
-     *
      * @return array
      */
     private function normalizeDomainMessage(DomainMessage $message)
     {
         return [
-            'uuid'        => (string) $message->getId(),
-            'playhead'    => $message->getPlayhead(),
-            'metadata'    => json_encode($this->metadataSerializer->serialize($message->getMetadata())),
-            'payload'     => json_encode($this->payloadSerializer->serialize($message->getPayload())),
+            'uuid' => (string) $message->getId(),
+            'playhead' => $message->getPlayhead(),
+            'metadata' => json_encode($this->metadataSerializer->serialize($message->getMetadata())),
+            'payload' => json_encode($this->payloadSerializer->serialize($message->getPayload())),
             'recorded_on' => $message->getRecordedOn()->toString(),
-            'type'        => $message->getType(),
+            'type' => $message->getType(),
         ];
     }
 
@@ -159,20 +157,17 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
     public function visitEvents(Criteria $criteria, EventVisitor $eventVisitor): void
     {
         if ($criteria->getAggregateRootTypes()) {
-            throw new CriteriaNotSupportedException(
-                'Mongo implementation cannot support criteria based on aggregate root types.'
-            );
+            throw new CriteriaNotSupportedException('Mongo implementation cannot support criteria based on aggregate root types.');
         }
 
         $findBy = $this->buildFindByCriteria($criteria);
 
-        foreach($this->eventCollection->find($findBy) as $event){
+        foreach ($this->eventCollection->find($findBy) as $event) {
             $eventVisitor->doWithEvent($this->denormalizeDomainMessage($event));
         }
     }
 
     /**
-     * @param Criteria $criteria
      * @return array
      */
     private function buildFindByCriteria(Criteria $criteria)
@@ -185,11 +180,12 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         if ($criteria->getEventTypes()) {
             $findBy['type'] = ['$in' => $criteria->getEventTypes()];
         }
+
         return $findBy;
     }
 
     public function configureCollection()
     {
-        $this->eventCollection->createIndex(['uuid' => 1, 'playhead' => 1],['unique' => true]);
+        $this->eventCollection->createIndex(['uuid' => 1, 'playhead' => 1], ['unique' => true]);
     }
 }
