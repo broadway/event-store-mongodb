@@ -1,3 +1,7 @@
+# broadway/event-store-mongodb
+
+[![Build Status](https://travis-ci.org/broadway/event-store-mongodb.svg?branch=master)](https://travis-ci.org/broadway/event-store-mongodb)
+
 Installation:
 -------------
 Install package via composer 
