@@ -18,7 +18,6 @@
     "require-dev": {
         "phpunit/phpunit": "^8.0",
         "ramsey/uuid": "^3.3",
-        "broadway/uuid-generator": "~0.4.0",
         "broadway/coding-standard": "^1.0"
     },
     "autoload": {
