@@ -101,10 +101,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         return new DomainEventStream($domainMessages);
     }
 
-    /**
-     * @return DomainMessage
-     */
-    private function denormalizeDomainMessage(BSONDocument $event)
+    private function denormalizeDomainMessage(BSONDocument $event): DomainMessage
     {
         return new DomainMessage(
             $event['uuid'],
@@ -145,10 +142,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         }
     }
 
-    /**
-     * @return array
-     */
-    private function normalizeDomainMessage(DomainMessage $message)
+    private function normalizeDomainMessage(DomainMessage $message): array
     {
         return [
             'uuid' => (string) $message->getId(),
@@ -176,10 +170,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         }
     }
 
-    /**
-     * @return array
-     */
-    private function buildFindByCriteria(Criteria $criteria)
+    private function buildFindByCriteria(Criteria $criteria): array
     {
         $findBy = [];
         if ($criteria->getAggregateRootIds()) {
@@ -193,7 +184,7 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         return $findBy;
     }
 
-    public function configureCollection()
+    public function configureCollection(): void
     {
         $this->eventCollection->createIndex(['uuid' => 1, 'playhead' => 1], ['unique' => true]);
     }
