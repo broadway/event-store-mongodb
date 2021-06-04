@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\$event of method Broadway\\\\EventStore\\\\MongoDB\\\\MongoDBEventStore\\:\\:denormalizeDomainMessage\\(\\) expects MongoDB\\\\Model\\\\BSONDocument, array\\|object given\\.$#"
+			count: 3
+			path: src/MongoDBEventStore.php
+
