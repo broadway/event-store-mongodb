@@ -1,6 +1,6 @@
 # broadway/event-store-mongodb
 
-[![Build Status](https://travis-ci.org/broadway/event-store-mongodb.svg?branch=master)](https://travis-ci.org/broadway/event-store-mongodb)
+![build status](https://github.com/broadway/event-store-mongodb/actions/workflows/ci.yml/badge.svg)
 
 Installation:
 -------------
