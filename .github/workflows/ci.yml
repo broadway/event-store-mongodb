@@ -17,9 +17,9 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "7.3"
           - "7.4"
           - "8.0"
+          - "8.1"
     services:
       mongodb:
         image: "mongo:3"
@@ -51,7 +51,7 @@ jobs:
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.0"
+          php-version: "8.1"
           coverage: "none"
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v1"
@@ -67,7 +67,7 @@ jobs:
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.0"
+          php-version: "8.1"
           coverage: "none"
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v1"
