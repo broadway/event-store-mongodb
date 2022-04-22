@@ -1,7 +1,51 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: src/MongoDBEventStore.php
+
+		-
+			message: "#^Cannot call method getCode\\(\\) on mixed\\.$#"
+			count: 1
+			path: src/MongoDBEventStore.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 4
+			path: src/MongoDBEventStore.php
+
+		-
+			message: "#^Parameter \\#1 \\$dateTimeString of static method Broadway\\\\Domain\\\\DateTime\\:\\:fromString\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: src/MongoDBEventStore.php
+
+		-
 			message: "#^Parameter \\#1 \\$event of method Broadway\\\\EventStore\\\\MongoDB\\\\MongoDBEventStore\\:\\:denormalizeDomainMessage\\(\\) expects MongoDB\\\\Model\\\\BSONDocument, array\\|object given\\.$#"
 			count: 3
 			path: src/MongoDBEventStore.php
 
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, mixed given\\.$#"
+			count: 2
+			path: src/MongoDBEventStore.php
+
+		-
+			message: "#^Parameter \\#1 \\$message of method Broadway\\\\EventStore\\\\MongoDB\\\\MongoDBEventStore\\:\\:normalizeDomainMessage\\(\\) expects Broadway\\\\Domain\\\\DomainMessage, mixed given\\.$#"
+			count: 1
+			path: src/MongoDBEventStore.php
+
+		-
+			message: "#^Parameter \\#1 \\$serializedObject of method Broadway\\\\Serializer\\\\Serializer\\:\\:deserialize\\(\\) expects array, mixed given\\.$#"
+			count: 2
+			path: src/MongoDBEventStore.php
+
+		-
+			message: "#^Parameter \\#2 \\$playhead of class Broadway\\\\Domain\\\\DomainMessage constructor expects int, mixed given\\.$#"
+			count: 1
+			path: src/MongoDBEventStore.php
+
+		-
+			message: "#^Parameter \\#3 \\$metadata of class Broadway\\\\Domain\\\\DomainMessage constructor expects Broadway\\\\Domain\\\\Metadata, mixed given\\.$#"
+			count: 1
+			path: src/MongoDBEventStore.php
