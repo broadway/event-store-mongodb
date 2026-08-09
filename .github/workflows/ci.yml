@@ -17,16 +17,13 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.3"
-          - "8.4"
-          - "8.2"
           - "8.2"
           - "8.3"
           - "8.4"
           - "8.5"
     services:
       mongodb:
-        image: "mongo:3"
+        image: "mongo:8"
         ports:
         - "27017:27017"
     steps:
@@ -36,6 +33,7 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           php-version: "${{ matrix.php-version }}"
+          extensions: "mongodb"
           coverage: "none"
         env:
           fail-fast: true
