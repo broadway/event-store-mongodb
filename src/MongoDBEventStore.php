@@ -51,16 +51,13 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
     public function __construct(
         Collection $eventCollection,
         Serializer $payloadSerializer,
-        Serializer $metadataSerializer
+        Serializer $metadataSerializer,
     ) {
         $this->eventCollection = $eventCollection;
         $this->payloadSerializer = $payloadSerializer;
         $this->metadataSerializer = $metadataSerializer;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load($id): DomainEventStream
     {
         $cursor = $this->eventCollection
@@ -81,9 +78,6 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         return new DomainEventStream($domainMessages);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadFromPlayhead($id, int $playhead): DomainEventStream
     {
         $cursor = $this->eventCollection
@@ -112,9 +106,6 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function append($id, DomainEventStream $eventStream): void
     {
         // noop to ensure that an error will be thrown early if the ID
@@ -128,6 +119,12 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
 
         foreach ($eventStream as $message) {
             $messages[] = $this->normalizeDomainMessage($message);
+        }
+
+        // mongodb/mongodb 2.x rejects an empty $documents array, while 1.x
+        // accepted it. Appending an empty stream is a no-op either way.
+        if ([] === $messages) {
+            return;
         }
 
         try {
@@ -154,9 +151,6 @@ class MongoDBEventStore implements EventStore, EventStoreManagement
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function visitEvents(Criteria $criteria, EventVisitor $eventVisitor): void
     {
         if ($criteria->getAggregateRootTypes()) {
